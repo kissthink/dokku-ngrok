@@ -12,7 +12,7 @@ CMD=$1
 }
 
 # Check if application is specified
-if [[ $CMD == ngrok ]] || [[ $CMD ==ngrok:* ]]; then
+if [[ $CMD == ngrok ]] || [[ $CMD == ngrok:* ]]; then
   if [[ ! $APP ]]; then
     echo "You must specify an app name"
     exit 1
