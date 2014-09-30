@@ -3,26 +3,29 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 STDIN=$(cat)
 APP="$1"
-DOCKER_OPTIONS_FILE="DOCKER_OPTIONS"
-DOCKER_OPTIONS_FILE_PATH="$DOKKU_ROOT/$APP/$DOCKER_OPTIONS_FILE"
+NGROK_OPTIONS_FILE="NGROK_OPTIONS"
+NGROK_OPTIONS_FILE_PATH="$DOKKU_ROOT/$APP/$NGROK_OPTIONS_FILE"
 
 output=""
-if [[ -f "$DOCKER_OPTIONS_FILE_PATH" ]]; then
+if [[ -f "$NGROK_OPTIONS_FILE_PATH" ]]; then
   DONE=false
   until $DONE; do
-    read line || DONE=true
+    read lines || DONE=true
 
     [[ ! -n "$line" ]] && continue
 
-    case "$line" in
+    case "$lines" in
       \#*)
         continue
         ;;
       *)
-        output="$output $line"
+        command -v ngrok >/dev/null 2>&1 || { echo >&2 "You have specified ngrok options but have not installed ngrok."; exit 1; }
+        while read -r line; do
+            output="$output && ngrok $line & "
+        done <<< "$lines"
         ;;
     esac
-  done < $DOCKER_OPTIONS_FILE_PATH
+  done < $NGROK_OPTIONS_FILE_PATH
 fi
 
 echo "$STDIN$output"

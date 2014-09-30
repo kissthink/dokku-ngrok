@@ -1,7 +1,7 @@
-dokku-docker-options
+dokku-ngrok
 ========================
 
-Basic docker options for dokku (https://github.com/progrium/dokku).
+Basic ngrok support for dokku (https://github.com/progrium/dokku).
 
 Requirements
 ------------
@@ -13,7 +13,7 @@ Installation
 
 ```bash
 $ cd /var/lib/dokku/plugins
-$ sudo git clone https://github.com/dyson/dokku-docker-options.git docker-options
+$ sudo git clone https://github.com/gregpardo/dokku-ngrok.git ngrok
 ````
 
 Usage
@@ -22,54 +22,45 @@ Usage
 ```bash
 $ dokku help
 ...
-    docker-options <app>                            display docker options for an app
-    docker-options:add <app> OPTIONS_STRING         add an option string an app
-    docker-options:remove <app> OPTIONS_STRING      remove an option string from an app
+    ngrok <app>                            Display the status of ngrok configuration on an app
+    ngrok:add <app> OPTIONS_STRING         Add an ngrok option string
+    ngrok:remove <app> OPTIONS_STRING      Remove an ngrok option string
 ...
 ````
 
 Add some options
 
 ```bash
-$ dokku docker-options:add myapp "-v /host/path:/container/path"
-$ dokku docker-options:add myapp "-v /another/container/path"
-$ dokku docker-options:add myapp "-link container_name:alias"
+$ dokku ngrok:add myapp "80"
+$ dokku ngrok:add myapp "-subdomain=myappdb 54321"
 ```
 
 Check what we added
 
 ```bash
-$ dokku docker-options myapp
--link container_name:alias
--v /host/path:/container/path
--v /another/container/path
+$ dokku ngrok myapp
+80
+-subdomain=myappdb 54321
 ```
 
 Remove an option
 ```bash
-$ dokku docker-options:remove myapp "-link container_name:alias"
+$ dokku ngrok:remove myapp "80"
 ```
 
 Manual Usage
 ------------
 
-In your applications folder (/home/dokku/app_name) create a file called DOCKER_OPTIONS.
+In your applications folder (/home/dokku/app_name) create a file called NGROK_OPTIONS.
 
 Inside this file list one docker option per line. For example:
 
 ```bash
--link container_name:alias
--v /host/path:/container/path
--v /another/container/path
+80
+-subdomain=myappdb 54321
 ```
 
-The above example will result in the following options being passed to docker during deploy and docker run:
-
-```bash
--link container_name:alias -v /host/path:/container/path -v /another/container/path
-```
-
-You may also include comments (lines beginning with a #) and blank lines in the DOCKER_OPTIONS file.
+You may also include comments (lines beginning with a #) and blank lines in the NGROK_OPTIONS file.
 
 Move information on docker options can be found here: http://docs.docker.io/en/latest/reference/run/ .
 
