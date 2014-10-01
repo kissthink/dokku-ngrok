@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -e
 
-STDIN=$(cat)
 APP="$1"
 NGROK_OPTIONS_FILE="NGROK_OPTIONS"
 NGROK_OPTIONS_FILE_PATH="$DOKKU_ROOT/$APP/$NGROK_OPTIONS_FILE"
 
 if [[ -f "$NGROK_OPTIONS_FILE_PATH" ]]; then
+  echo "-----> Ngrok commands"
   DONE=false
   until $DONE; do
     read lines || DONE=true
@@ -18,8 +18,7 @@ if [[ -f "$NGROK_OPTIONS_FILE_PATH" ]]; then
         continue
         ;;
       *)
-        command -v ngrok >/dev/null 2>&1 || { echo >&2 "You have specified ngrok options but have not installed ngrok."; exit 1; }
-        echo "Loading ngrok commands"
+        command -v ngrok >/dev/null 2>&1 || { echo >&2 "You have specified ngrok options but have not installed ngrok."; exit 1;
         while read -r line; do
             output="ngrok $line &"
             echo $output
