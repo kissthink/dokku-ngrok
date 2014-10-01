@@ -19,8 +19,10 @@ if [[ -f "$NGROK_OPTIONS_FILE_PATH" ]]; then
         ;;
       *)
         command -v ngrok >/dev/null 2>&1 || { echo >&2 "You have specified ngrok options but have not installed ngrok."; exit 1; }
+        echo "Loading ngrok commands"
         while read -r line; do
             output="ngrok $line &"
+            echo $output
             eval $output
         done <<< "$lines"
         ;;
