@@ -1,24 +1,25 @@
 #!/usr/bin/env bash
 set -e
 
+echo "-----> Ngrok commands"
+
 APP="$1"
 NGROK_OPTIONS_FILE="NGROK_OPTIONS"
 NGROK_OPTIONS_FILE_PATH="$DOKKU_ROOT/$APP/$NGROK_OPTIONS_FILE"
 
 if [[ -f "$NGROK_OPTIONS_FILE_PATH" ]]; then
-  echo "-----> Ngrok commands"
   DONE=false
   until $DONE; do
     read lines || DONE=true
 
-    [[ ! -n "$line" ]] && continue
+    [[ ! -n "$lines" ]] && continue
 
     case "$lines" in
       \#*)
         continue
         ;;
       *)
-        command -v ngrok >/dev/null 2>&1 || { echo >&2 "You have specified ngrok options but have not installed ngrok."; exit 1;
+        command -v ngrok >/dev/null 2>&1 || { echo >&2 "You have specified ngrok options but have not installed ngrok."; exit 1; }
         while read -r line; do
             output="ngrok $line &"
             echo $output
